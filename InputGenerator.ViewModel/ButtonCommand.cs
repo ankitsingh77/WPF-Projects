@@ -18,6 +18,11 @@ namespace InputGenerator.ViewModel
             this._canExecute = canExecute;
         }
 
+        public void Refresh()
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter)

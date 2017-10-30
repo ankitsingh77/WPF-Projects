@@ -57,6 +57,7 @@ namespace InputGenerator.ViewModel
                 }
                 else
                     _isValidPath = false;
+                AutoSelectProductCommand.Refresh();
             }
         }
 
@@ -93,6 +94,7 @@ namespace InputGenerator.ViewModel
             set
             {
                 _product = value;
+                AddCommand.Refresh();
             }
         }
 
@@ -185,11 +187,17 @@ namespace InputGenerator.ViewModel
             }
             Product = string.Empty;
             IsDatabase = false;
+            RaisePropertyChangeEvent("Product");
+            RaisePropertyChangeEvent("ProductList");
         }
 
         private bool AddCommand_CanExecuteDelegate()
         {
             if (Product.Contains(' '))
+            {
+                return false;
+            }
+            else if (String.IsNullOrEmpty(Product))
             {
                 return false;
             }
@@ -221,6 +229,7 @@ namespace InputGenerator.ViewModel
             {
                 ProductList = String.Join(",", productNames);
             }
+            RaisePropertyChangeEvent("ProductList");
         }
 
         private bool AutoSelectProductCommand_CanExecuteDelegate()
@@ -248,6 +257,11 @@ namespace InputGenerator.ViewModel
             return true;
         }
 
+
+        public void RaisePropertyChangeEvent(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         //private void ProductAddByEnterKeyCommand_ExecuteDelagate()
         //{
             
