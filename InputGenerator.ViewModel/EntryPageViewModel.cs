@@ -1,0 +1,261 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
+
+namespace InputGenerator.ViewModel
+{
+    public class EntryPageViewModel : INotifyPropertyChanged
+    {
+        private ButtonCommand AddCommand;
+
+        private ButtonCommand AutoSelectProductCommand;
+
+        private ButtonCommand PatchPropertiesCommand;
+
+        private ButtonCommand PatchInputCommand;
+
+        //private KeyBindingCommand ProductAddByEnterKeyCommand;
+
+        private string _path = string.Empty;
+        private string _outputPath = string.Empty;
+        private string _buildName = string.Empty;
+        private string _product = string.Empty;
+        private string _productList = string.Empty;
+        private bool _isDatabase = false;
+
+        private bool _isValidPath = false;
+        public EntryPageViewModel()
+        {
+            this.AddCommand = new ButtonCommand(AddCommand_ExecuteDelegate, AddCommand_CanExecuteDelegate);
+            this.AutoSelectProductCommand = new ButtonCommand(AutoSelectProductCommand_ExecuteDelegate, AutoSelectProductCommand_CanExecuteDelegate);
+            this.PatchPropertiesCommand = new ButtonCommand(PatchPropertiesCommand_ExecuteDelegate, PatchPropertiesCommand_CanExecuteDelegate);
+            this.PatchInputCommand = new ButtonCommand(PatchInputCommand_ExecuteDelegate, PatchInputCommand_CanExecuteDelegate);
+            //this.ProductAddByEnterKeyCommand = new KeyBindingCommand(ProductAddByEnterKeyCommand_ExecuteDelagate, ProductAddByEnterKeyCommand_CanExecuteDelegate);
+        }
+
+        public string Path
+        {
+            get
+            {
+                return _path;
+            }
+            set
+            {
+                _path = value;
+                if (!String.IsNullOrEmpty(_path))
+                {
+                    var dInfo = new DirectoryInfo(_path);
+                    if (dInfo.Exists)
+                        _isValidPath = true;
+                    else
+                        _isValidPath = false;
+                }
+                else
+                    _isValidPath = false;
+            }
+        }
+
+        public string OutputPath
+        {
+            get
+            {
+                return _outputPath;
+            }
+            set
+            {
+                _outputPath = value;
+            }
+        }
+
+        public string BuildName
+        {
+            get
+            {
+                return _buildName;
+            }
+            set
+            {
+                _buildName = value;
+            }
+        }
+
+        public string Product
+        {
+            get
+            {
+                return _product;
+            }
+            set
+            {
+                _product = value;
+            }
+        }
+
+        public string ProductList
+        {
+            get
+            {
+                return _productList;
+            }
+            set
+            {
+                _productList = value;
+            }
+        }
+
+        public bool IsDatabase
+        {
+            get
+            {
+                return _isDatabase;
+            }
+            set
+            {
+                _isDatabase = value;
+            }
+        }
+
+        public ICommand btnAddCommand
+        {
+            get
+            {
+                return AddCommand;
+            }
+        }
+
+        public ICommand btnAutoSelectProductCommand
+        {
+            get
+            {
+                return AutoSelectProductCommand;
+            }
+        }
+
+        public ICommand btnPatchPropertiesCommand
+        {
+            get
+            {
+                return PatchPropertiesCommand;
+            }
+        }
+
+        public ICommand btnPatchInputCommand
+        {
+            get
+            {
+                return PatchInputCommand;
+            }
+        }
+
+        //public ICommand enterKeyPressCommand
+        //{
+        //    get
+        //    {
+        //        return ProductAddByEnterKeyCommand;
+        //    }
+        //}
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void AddCommand_ExecuteDelegate()
+        {
+
+            if (IsDatabase == true)
+            {
+                if (String.IsNullOrEmpty(ProductList))
+                    ProductList = Product.Substring(0, Product.Length - 8) + "_DB:" + Product;
+                else
+                    ProductList += "," + Product.Substring(0, Product.Length - 8) + "_DB:" + Product;
+            }
+            else
+            {
+                if (String.IsNullOrEmpty(ProductList))
+                {
+                    ProductList = Product;
+                }
+                else
+                {
+                    ProductList += "," + Product;
+                }
+            }
+            Product = string.Empty;
+            IsDatabase = false;
+        }
+
+        private bool AddCommand_CanExecuteDelegate()
+        {
+            if (Product.Contains(' '))
+            {
+                return false;
+            }
+            else if (IsDatabase == true)
+            {
+                if (!Product.ToUpper().EndsWith("DATABASE"))
+                    return false;
+            }
+            return true;
+        }
+
+        private void AutoSelectProductCommand_ExecuteDelegate()
+        {
+            List<string> productNames = new List<string>();
+            var products = new DirectoryInfo(_path).GetDirectories();
+            if (products != null && products.Length > 0)
+            {
+                foreach (var product in products)
+                {
+                    if (product.Name.ToUpper().EndsWith("DATABASE"))
+                    {
+                        productNames.Add(product.Name.Substring(0, product.Name.Length - 8) + "_DB:" + product.Name);
+                    }
+                    else
+                        productNames.Add(product.Name);
+                }
+            }
+            if (productNames.Count > 0)
+            {
+                ProductList = String.Join(",", productNames);
+            }
+        }
+
+        private bool AutoSelectProductCommand_CanExecuteDelegate()
+        {
+            return _isValidPath;
+        }
+
+        private void PatchPropertiesCommand_ExecuteDelegate()
+        {
+
+        }
+
+        private bool PatchPropertiesCommand_CanExecuteDelegate()
+        {
+            return true;
+        }
+
+        private void PatchInputCommand_ExecuteDelegate()
+        {
+
+        }
+
+        private bool PatchInputCommand_CanExecuteDelegate()
+        {
+            return true;
+        }
+
+        //private void ProductAddByEnterKeyCommand_ExecuteDelagate()
+        //{
+            
+        //}
+
+        //private bool ProductAddByEnterKeyCommand_CanExecuteDelegate()
+        //{
+        //    return true;
+        //}
+    }
+}

@@ -1,0 +1,97 @@
+﻿<Window x:Class="InputGenerator.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InputGenerator.View"
+        mc:Ignorable="d"
+         Title="Generate Input" Height="421" Width="868" ResizeMode="NoResize" Icon="images/Folder-icon20x20.png" WindowStyle="None">
+    <!--<Window.Resources>
+        <local:EnumBooleanConvertor x:Key="operationTypeConverter" />
+    </Window.Resources>
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="{Binding ActualHeight,ElementName=titlebar}"/>
+    </WindowChrome.WindowChrome>
+    <DockPanel LastChildFill="True">
+        <Border DockPanel.Dock="Top" Height="25" x:Name="titlebar">
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <LinearGradientBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                            <RotateTransform CenterY="0.5" CenterX="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </LinearGradientBrush.RelativeTransform>
+                    <GradientStop Color="#FF4BCEE2"/>
+                    <GradientStop Color="#FF97DDFF"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <DockPanel>
+                <TextBlock DockPanel.Dock ="Left" Text="{Binding Title, RelativeSource={RelativeSource FindAncestor,AncestorType=Window},FallbackValue=Title}" 
+                       Margin="10,0,0,0"
+                       VerticalAlignment="Center">
+                    <TextBlock.Effect>
+                        <DropShadowEffect Color="White" ShadowDepth="3"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+                <StackPanel DockPanel.Dock="Right"  Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource btnStyle}" x:Name="btnMinimize" Width="18" Margin="1" Click="MinimizeButton_Click" FontSize="8" Content="_"  Height="18" WindowChrome.IsHitTestVisibleInChrome="True" BorderThickness="0" />
+                    <Button Style="{StaticResource btnStyle}" x:Name="btnRestore" Width="18" Margin="1" Click="MaximizeButton_Click" Content="#" FontSize="8" Height="18" WindowChrome.IsHitTestVisibleInChrome="True" BorderThickness="0" />
+                    <Button Style="{StaticResource btnStyle}" x:Name="btnClose" Width="18" Margin="1" Click="CloseButton_Click" Content="X" FontSize="8"  Height="18" WindowChrome.IsHitTestVisibleInChrome="True" BorderThickness="0"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+        <Border>
+            <Grid DataContext="{Binding}">
+                <Grid Name="Tree">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"></ColumnDefinition>
+                        <ColumnDefinition Width="400"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Name ="TreeContainor" Grid.Column="0" Height="Auto">
+                        <TreeView Name="ProductView" ItemsSource="{Binding}" Height="{Binding Path=ActualHeight, ElementName=TreeContainor}">
+                            <TreeView.Resources>
+                                <HierarchicalDataTemplate DataType="{x:Type local:Folder}" ItemsSource="{Binding Items}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="images\Folder-icon20x20.png"></Image>
+                                        <TextBlock Text="{Binding Path=FolderName}" Margin="6,3,5,0"/>
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+                                <DataTemplate DataType="{x:Type local:File}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Margin="5,0,0,0" Source="images\blank-file-5-xxl.png"></Image>
+                                        <TextBlock Text="{Binding FileName}" Margin="6,3,5,0"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </TreeView.Resources>
+                        </TreeView>
+                    </StackPanel>
+                    <Grid Name="OperationWindow" Grid.Column="1" Width="Auto">
+                        <GroupBox Header="Operation Type" HorizontalAlignment="Left" Margin="110,100,0,0" VerticalAlignment="Top" Height="200" Width="263" DataContext="{Binding ElementName=ProductView, Path=SelectedItem}" BorderBrush="#FF74C6F7">
+                            <Grid Height="190" VerticalAlignment="Top">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="2*"/>
+                                    <RowDefinition Height="1.5*"/>
+                                    <RowDefinition Height="1.5*"/>
+                                    <RowDefinition Height="1.5*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="Select the operation which needs to be performed on this file."  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"  TextWrapping="WrapWithOverflow"/>
+                                <RadioButton Grid.Row="1" Name="IsAdd" Content="Add" Margin="30,10,0,0" IsChecked="{Binding Operation, Mode=TwoWay, Converter={StaticResource operationTypeConverter}, ConverterParameter=Add, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding ElementName=ProductView, Path=SelectedItem, Converter ={StaticResource treeelementTypeConverter} }"></RadioButton>
+                                <RadioButton Grid.Row="2" Name="IsUpdate" Content="Update" Margin="30,5,0,0" IsChecked="{Binding Operation, Mode=TwoWay, Converter={StaticResource operationTypeConverter}, ConverterParameter=Update,UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding ElementName=ProductView, Path=SelectedItem, Converter ={StaticResource treeelementTypeConverter}}"></RadioButton>
+                                <RadioButton Grid.Row="3" Name="IsAddorUpdate" Content="AddOrUpdate" Margin="30,0,0,0" IsChecked="{Binding Operation, Mode=TwoWay, Converter={StaticResource operationTypeConverter}, ConverterParameter=AddorUpdate, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding ElementName=ProductView, Path=SelectedItem, Converter ={StaticResource treeelementTypeConverter}}"></RadioButton>
+                            </Grid>
+                        </GroupBox>
+                        <Button Name="Refresh" Width="100" Height="22" Margin="20,0,0,30" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="Refresh" IsEnabled="False" Click="Refresh_Click"></Button>
+                    </Grid>
+                    <DockPanel Grid.Column="2" Width="Auto" HorizontalAlignment="Right">
+                        <Button Name="GenerateXml" DockPanel.Dock="Right" Height="22" Width="100" VerticalAlignment="Bottom" Margin="0,0,0,30" Content="Generate" VerticalContentAlignment="Center" Click="Button_Click" BorderBrush="#FF81D9F3"></Button>
+
+                    </DockPanel>
+                </Grid>
+            </Grid>
+        </Border>
+    </DockPanel>-->
+</Window>
