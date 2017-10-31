@@ -20,7 +20,8 @@ namespace InputGenerator.ViewModel
 
         public void Refresh()
         {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            if(CanExecuteChanged!=null)
+                CanExecuteChanged(this, EventArgs.Empty);
         }
 
         public event EventHandler CanExecuteChanged;

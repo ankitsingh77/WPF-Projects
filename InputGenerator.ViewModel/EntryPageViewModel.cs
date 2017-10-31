@@ -82,6 +82,7 @@ namespace InputGenerator.ViewModel
             set
             {
                 _buildName = value;
+                PatchPropertiesCommand.Refresh();
             }
         }
 
@@ -107,6 +108,7 @@ namespace InputGenerator.ViewModel
             set
             {
                 _productList = value;
+                PatchPropertiesCommand.Refresh();
             }
         }
 
@@ -239,11 +241,39 @@ namespace InputGenerator.ViewModel
 
         private void PatchPropertiesCommand_ExecuteDelegate()
         {
-
+            List<string> products = new List<string>();
+            products = ProductList.Split(',').ToList();
+            StringBuilder builder = new StringBuilder();
+            builder.Append("PRODUCTS=");
+            foreach (var product in products)
+            {
+                if (product.Contains(':'))
+                {
+                    builder.Append(product.Remove(product.LastIndexOf(':'))).Append(",");
+                }
+                else
+                    builder.Append(product).Append(",");
+            }
+            builder.Remove(builder.Length - 1, 1);
+            builder.Append(Environment.NewLine);
+            builder.Append("BUILD_NAME=").Append(this.BuildName);
+            using (var output = System.IO.File.Create(this.OutputPath + "\\patch.properties"))
+            {
+                byte[] info = new UTF8Encoding(true).GetBytes(builder.ToString());
+                output.Write(info, 0, info.Length);
+            }
         }
 
         private bool PatchPropertiesCommand_CanExecuteDelegate()
         {
+            if (String.IsNullOrEmpty(this.ProductList))
+            {
+                return false;
+            }
+            else if (String.IsNullOrEmpty(this.BuildName))
+            {
+                return false;
+            }
             return true;
         }
 
@@ -260,7 +290,8 @@ namespace InputGenerator.ViewModel
 
         public void RaisePropertyChangeEvent(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if(PropertyChanged!=null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
         //private void ProductAddByEnterKeyCommand_ExecuteDelagate()
         //{

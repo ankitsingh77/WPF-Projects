@@ -74,12 +74,12 @@
                         <RowDefinition Height="4*"/>
                     </Grid.RowDefinitions>
                     <Label Content="Patch Folder" Margin="60,0,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="0" Foreground="#FF565918"></Label>
-                    <TextBox Name="txtPath" Grid.Column="1" Grid.Row="0" Width="270" Height="20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="2,0,0,5" Text="{Binding Path, Source={StaticResource objEntryPage}}"></TextBox>
+                    <TextBox Name="txtPath" Grid.Column="1" Grid.Row="0" Width="270" Height="20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="2,0,0,5" Text="{Binding Path, Mode=TwoWay, Source={StaticResource objEntryPage}, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                     <Button Name="btnpatchFolder" Grid.Column="1" Grid.Row="0" Width="80" Height="20" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,5,5,5" Content="Browse" Background="White" BorderBrush="#FF8F8FF0" Foreground="#FF565918" Click="btnpatchFolder_Click"></Button>
 
 
                     <Label Content="Output Path" Margin="60,0,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="0" Foreground="#FF565918"></Label>
-                    <TextBlock Name="txtOutput" Grid.Column="1" Grid.Row="1" Width="270" Height="20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,5" Background="White" Text="{Binding OutputPath, Source={StaticResource objEntryPage}}">
+                    <TextBlock Name="txtOutput" Grid.Column="1" Grid.Row="1" Width="270" Height="20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,5" Background="White" Text="{Binding OutputPath, Mode=TwoWay, Source={StaticResource objEntryPage}, UpdateSourceTrigger=PropertyChanged}">
                         <TextBlock.ToolTip>
                             <ToolTip 
              DataContext="{Binding Path=PlacementTarget, RelativeSource={x:Static RelativeSource.Self}}">
